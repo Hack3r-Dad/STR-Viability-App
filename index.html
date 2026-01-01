@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mountain Property Investment Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --obsidian: #0f1419;
+            --charcoal: #1c2128;
+            --slate: #2d333b;
+            --steel: #444c56;
+            --silver: #768390;
+            --mist: #adbac7;
+            --cloud: #cdd9e5;
+            --snow: #f0f3f6;
+            --white: #ffffff;
+            --forest: #2e7d5a;
+            --forest-light: #3d9970;
+            --forest-glow: rgba(46, 125, 90, 0.12);
+            --amber: #c9a227;
+            --amber-glow: rgba(201, 162, 39, 0.12);
+            --rose: #c94a4a;
+            --rose-glow: rgba(201, 74, 74, 0.1);
+            --azure: #4a8fc9;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow-subtle: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-card: 0 2px 8px rgba(0,0,0,0.06), 0 8px 32px rgba(0,0,0,0.06);
+            --shadow-elevated: 0 4px 16px rgba(0,0,0,0.1), 0 16px 48px rgba(0,0,0,0.1);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: linear-gradient(180deg, var(--snow) 0%, var(--white) 100%);
+            color: var(--charcoal); 
+            line-height: 1.6; 
+            font-size: 14px;
+            min-height: 100vh;
+        }
+        header { 
+            background: var(--obsidian);
+            color: var(--white); 
+            padding: 3.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 80%, rgba(46, 125, 90, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(201, 162, 39, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .header-inner { max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
+        header h1 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.75rem; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+        header h1 span { color: #e6c547; font-style: italic; }
+        .header-subtitle { color: var(--silver); font-weight: 400; font-size: 1rem; letter-spacing: 0.02em; }
+        .header-stats { display: flex; justify-content: center; gap: 3rem; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .header-stat { text-align: center; }
+        .header-stat-value { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--white); }
+        .header-stat-label { font-size: 0.7rem; color: var(--silver); text-transform: uppercase; letter-spacing: 0.1em; }
+        nav { background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.06); position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-subtle); }
+        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; gap: 0.25rem; padding: 0.5rem; }
+        nav button { background: none; border: none; padding: 0.75rem 1.25rem; font-family: inherit; font-size: 0.8rem; font-weight: 500; color: var(--steel); cursor: pointer; border-radius: var(--radius-sm); transition: var(--transition); }
+        nav button:hover { color: var(--charcoal); background: var(--snow); }
+        nav button.active { color: var(--forest); background: var(--forest-glow); }
+        main { max-width: 1200px; margin: 0 auto; padding: 3rem 2rem; }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .section-header { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2rem; font-weight: 500; color: var(--obsidian); text-align: center; margin-bottom: 0.5rem; }
+        .section-subheader { color: var(--silver); text-align: center; margin-bottom: 2.5rem; font-size: 0.95rem; }
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 3rem; }
+        .info-card { background: var(--white); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow-subtle); text-align: center; border: 1px solid rgba(0,0,0,0.04); transition: var(--transition); }
+        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+        .info-card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .info-card-title { font-weight: 500; margin-bottom: 0.25rem; font-size: 0.8rem; color: var(--steel); }
+        .info-card-value { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.6rem; font-weight: 600; color: var(--forest); }
+        .info-card-note { font-size: 0.7rem; color: var(--silver); margin-top: 0.25rem; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 1.5rem; }
+        .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-subtle); overflow: hidden; transition: var(--transition); cursor: pointer; border: 1px solid rgba(0,0,0,0.04); }
+        .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevated); }
+        .card.under-contract { opacity: 0.55; }
+        .card-header { padding: 1.5rem; background: linear-gradient(135deg, var(--slate) 0%, var(--steel) 100%); color: var(--white); }
+        .card-tier { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem; }
+        .tier-1 { background: var(--forest); color: var(--white); }
+        .tier-1a { background: var(--amber); color: var(--obsidian); }
+        .tier-2 { background: var(--azure); color: var(--white); }
+        .tier-3 { background: var(--steel); color: var(--white); }
+        .card-price { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2rem; font-weight: 600; letter-spacing: -0.02em; }
+        .card-name { font-weight: 600; margin-top: 0.25rem; font-size: 0.95rem; }
+        .card-location { color: var(--silver); font-size: 0.8rem; margin-top: 0.25rem; }
+        .card-tax-badge { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.75rem; padding: 0.35rem 0.75rem; background: var(--forest-glow); border-radius: 100px; font-size: 0.7rem; color: var(--forest-light); }
+        .card-stats { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .card-stat { padding: 1rem 0.5rem; text-align: center; border-right: 1px solid rgba(0,0,0,0.06); }
+        .card-stat:last-child { border-right: none; }
+        .card-stat-value { font-weight: 700; font-size: 1rem; color: var(--charcoal); }
+        .card-stat-label { font-size: 0.65rem; color: var(--silver); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.15rem; }
+        .card-requirements { padding: 1rem 1.5rem; background: var(--snow); }
+        .req-title { font-size: 0.65rem; font-weight: 600; color: var(--steel); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.08em; }
+        .req-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.35rem 1rem; }
+        .req-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--steel); }
+        .req-check { color: var(--forest); font-weight: 600; }
+        .req-x { color: var(--rose); font-weight: 600; }
+        .card-financials { padding: 1.5rem; }
+        .fin-row { display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 0; font-size: 0.85rem; }
+        .fin-row.highlight { background: var(--snow); margin: 0.75rem -1.5rem; padding: 0.6rem 1.5rem; font-weight: 600; }
+        .fin-row.total { background: var(--slate); color: var(--white); margin: 1rem -1.5rem -1.5rem; padding: 1rem 1.5rem; font-weight: 600; }
+        .fin-positive { color: var(--forest); }
+        .fin-negative { color: var(--rose); }
+        .mortgage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 1rem; }
+        .mortgage-box { background: var(--snow); border-radius: var(--radius-sm); padding: 1rem; text-align: center; }
+        .mortgage-box-title { font-size: 0.65rem; font-weight: 600; color: var(--steel); letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+        .mortgage-box-value { font-size: 1.15rem; font-weight: 700; color: var(--charcoal); }
+        .mortgage-box-sub { font-size: 0.75rem; color: var(--silver); margin-top: 0.25rem; }
+        .card-flags { padding: 1rem 1.5rem; background: var(--rose-glow); border-top: 1px solid rgba(201, 74, 74, 0.12); }
+        .flags-title { font-size: 0.65rem; font-weight: 600; color: var(--rose); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .flag-item { font-size: 0.8rem; color: var(--charcoal); padding-left: 1rem; text-indent: -1rem; }
+        .flag-item::before { content: "⚠ "; color: var(--rose); }
+        .table-container { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-subtle); overflow: hidden; margin-bottom: 2rem; border: 1px solid rgba(0,0,0,0.04); }
+        .table-title { padding: 1rem 1.5rem; background: var(--slate); color: var(--white); font-weight: 600; font-size: 0.9rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.875rem 1rem; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        th { background: var(--snow); font-weight: 600; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--steel); }
+        td { font-size: 0.85rem; }
+        .table-property { font-weight: 600; }
+        .build-ref { background: linear-gradient(135deg, var(--slate) 0%, var(--steel) 100%); color: var(--white); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; }
+        .build-ref h3 { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.5rem; font-weight: 500; margin-bottom: 1.5rem; text-align: center; }
+        .build-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+        .build-item { background: rgba(255,255,255,0.08); border-radius: var(--radius-sm); padding: 1.25rem; text-align: center; }
+        .build-item-title { font-size: 0.75rem; opacity: 0.7; margin-bottom: 0.35rem; }
+        .build-item-value { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; }
+        .build-item-note { font-size: 0.7rem; opacity: 0.6; margin-top: 0.25rem; }
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 20, 25, 0.8); backdrop-filter: blur(4px); z-index: 1000; overflow-y: auto; padding: 2rem; }
+        .modal-overlay.active { display: flex; justify-content: center; }
+        .modal { background: var(--white); border-radius: var(--radius); max-width: 900px; width: 100%; margin: auto; box-shadow: var(--shadow-elevated); }
+        .modal-header { padding: 2rem; background: linear-gradient(135deg, var(--slate) 0%, var(--steel) 100%); color: var(--white); border-radius: var(--radius) var(--radius) 0 0; position: relative; }
+        .modal-close { position: absolute; right: 1.5rem; top: 1.5rem; background: rgba(255,255,255,0.1); border: none; font-size: 1.25rem; cursor: pointer; color: var(--silver); width: 36px; height: 36px; border-radius: 50%; transition: var(--transition); }
+        .modal-close:hover { background: rgba(255,255,255,0.2); color: var(--white); }
+        .modal-price { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 2.5rem; font-weight: 600; }
+        .modal-title { font-weight: 600; font-size: 1.1rem; margin-top: 0.25rem; }
+        .modal-location { color: var(--silver); font-size: 0.9rem; }
+        .modal-body { padding: 2rem; }
+        .modal-section { margin-bottom: 2rem; }
+        .modal-section-title { font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.08); color: var(--charcoal); }
+        .modal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .modal-detail-label { font-size: 0.7rem; color: var(--silver); text-transform: uppercase; letter-spacing: 0.05em; }
+        .modal-detail-value { font-weight: 600; color: var(--charcoal); }
+        .modal-list { list-style: none; }
+        .modal-list li { padding: 0.35rem 0; padding-left: 1.5rem; position: relative; font-size: 0.9rem; }
+        .modal-list li::before { position: absolute; left: 0; }
+        .modal-list.highlights li::before { content: "✓"; color: var(--forest); }
+        .modal-list.concerns li::before { content: "⚠"; color: var(--rose); }
+        .modal-list.questions li::before { content: "?"; color: var(--amber); }
+        .modal-link { display: inline-block; background: var(--slate); color: var(--white); padding: 0.875rem 1.75rem; border-radius: var(--radius-sm); text-decoration: none; font-weight: 500; margin-top: 1rem; transition: var(--transition); }
+        .modal-link:hover { background: var(--steel); transform: translateY(-1px); }
+        @media (max-width: 768px) { 
+            .card-grid { grid-template-columns: 1fr; }
+            .card-stats { grid-template-columns: repeat(2, 1fr); }
+            .modal-grid { grid-template-columns: 1fr 1fr; }
+            header h1 { font-size: 2rem; }
+            .header-stats { flex-direction: column; gap: 1rem; }
+            .nav-inner { flex-wrap: wrap; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <h1>Mountain Property <span>Investment Portfolio</span></h1>
+            <p class="header-subtitle">Comprehensive Analysis · NC, VA, WV · December 2025</p>
+            <div class="header-stats">
+                <div class="header-stat"><div class="header-stat-value" id="total-properties">26</div><div class="header-stat-label">Properties</div></div>
+                <div class="header-stat"><div class="header-stat-value" id="total-acres">2,800+</div><div class="header-stat-label">Total Acres</div></div>
+                <div class="header-stat"><div class="header-stat-value" id="avg-ppa">$7.2K</div><div class="header-stat-label">Avg $/Acre</div></div>
+                <div class="header-stat"><div class="header-stat-value">3</div><div class="header-stat-label">States</div></div>
+            </div>
+        </div>
+    </header>
+    <nav><div class="nav-inner">
+        <button class="active" onclick="showSection('overview')">Overview</button>
+        <button onclick="showSection('tier1')">Tier 1</button>
+        <button onclick="showSection('tier2')">Tier 2</button>
+        <button onclick="showSection('tier3')">Tier 3</button>
+        <button onclick="showSection('income')">Income</button>
+        <button onclick="showSection('costs')">Costs</button>
+        <button onclick="showSection('mortgage')">Mortgage</button>
+        <button onclick="showSection('buildcosts')">Build</button>
+        <button onclick="showSection('questions')">Questions</button>
+    </div></nav>
+    <main>
+        <div id="overview" class="section active">
+            <h2 class="section-header">Portfolio Overview</h2>
+            <p class="section-subheader">26 properties analyzed with verified income projections</p>
+            <div class="info-grid">
+                <div class="info-card"><div class="info-card-icon">🎄</div><div class="info-card-title">Christmas Tree Lease</div><div class="info-card-value">$150/ac</div><div class="info-card-note">Requires 3,000'+ elev</div></div>
+                <div class="info-card"><div class="info-card-icon">🌲</div><div class="info-card-title">Hardwood Timber</div><div class="info-card-value">$2,500/ac</div><div class="info-card-note">Selective harvest</div></div>
+                <div class="info-card"><div class="info-card-icon">🏡</div><div class="info-card-title">Primary STR</div><div class="info-card-value">$35-60K</div><div class="info-card-note">Net after 30% costs</div></div>
+                <div class="info-card"><div class="info-card-icon">🏘️</div><div class="info-card-title">Tiny Cabin STR</div><div class="info-card-value">$30K/yr</div><div class="info-card-note">$60K build cost</div></div>
+                <div class="info-card"><div class="info-card-icon">🌾</div><div class="info-card-title">Pasture Lease</div><div class="info-card-value">$14-47/ac</div><div class="info-card-note">WV/NC/VA rates</div></div>
+            </div>
+            <div class="card-grid" id="overview-grid"></div>
+        </div>
+        <div id="tier1" class="section"><h2 class="section-header">Tier 1 — Top Priority</h2><p class="section-subheader">Best match for requirements, value, and income potential</p><div class="card-grid" id="tier1-grid"></div></div>
+        <div id="tier2" class="section"><h2 class="section-header">Tier 2 — Strong Interest</h2><p class="section-subheader">Solid candidates requiring additional due diligence</p><div class="card-grid" id="tier2-grid"></div></div>
+        <div id="tier3" class="section"><h2 class="section-header">Tier 3 — Monitoring</h2><p class="section-subheader">Potential opportunities with unresolved questions</p><div class="card-grid" id="tier3-grid"></div></div>
+        <div id="income" class="section"><h2 class="section-header">Income Analysis</h2><p class="section-subheader">All revenue streams with verified rates</p><div class="table-container"><div class="table-title">💰 Income & Expense Summary (Annual)</div><table><thead><tr><th>Property</th><th>Home</th><th>STR Net</th><th>Xmas Trees</th><th>Timber</th><th>Tax Savings</th><th>Total</th><th>Costs</th><th>Net CF</th></tr></thead><tbody id="income-tbody"></tbody></table></div></div>
+        <div id="costs" class="section"><h2 class="section-header">Cost of Ownership</h2><p class="section-subheader">Complete annual and monthly expenses at 6%</p>
+            <div class="info-grid">
+                <div class="info-card"><div class="info-card-icon">📊</div><div class="info-card-title">Property Mgmt</div><div class="info-card-value">30%</div><div class="info-card-note">Of gross STR</div></div>
+                <div class="info-card"><div class="info-card-icon">🛡️</div><div class="info-card-title">STR Insurance</div><div class="info-card-value">$2,500</div><div class="info-card-note">Annual</div></div>
+                <div class="info-card"><div class="info-card-icon">🌐</div><div class="info-card-title">Starlink</div><div class="info-card-value">$1,440</div><div class="info-card-note">$120/month</div></div>
+                <div class="info-card"><div class="info-card-icon">🔧</div><div class="info-card-title">Maintenance</div><div class="info-card-value">1%</div><div class="info-card-note">Of property value</div></div>
+            </div>
+            <div class="table-container"><div class="table-title">📋 Annual Cost Breakdown</div><table><thead><tr><th>Property</th><th>Mortgage</th><th>Tax</th><th>Insurance</th><th>Maint</th><th>Utilities</th><th>Total/Yr</th><th>Monthly</th></tr></thead><tbody id="costs-tbody"></tbody></table></div>
+            <div class="table-container"><div class="table-title">⚖️ Cost vs Revenue</div><table><thead><tr><th>Property</th><th>Annual Costs</th><th>Immediate Rev</th><th>Imm Net</th><th>Full Potential</th><th>Full Net</th></tr></thead><tbody id="costsvrev-tbody"></tbody></table></div>
+        </div>
+        <div id="mortgage" class="section"><h2 class="section-header">Mortgage Comparison</h2><p class="section-subheader">20-Year vs 30-Year @ 6% Market Rate · 5% Down</p>
+            <div class="table-container"><div class="table-title">💵 Full Investment Payment Comparison</div><table><thead><tr><th>Property</th><th>Investment</th><th>20yr/mo</th><th>30yr/mo</th><th>Savings</th><th>20yr Int</th><th>30yr Int</th><th>Extra Int</th></tr></thead><tbody id="mortgage-tbody"></tbody></table></div>
+            <div class="table-container"><div class="table-title">📊 Cash Flow by Term</div><table><thead><tr><th>Property</th><th>Full Income</th><th>20yr Costs</th><th>20yr CF</th><th>30yr Costs</th><th>30yr CF</th></tr></thead><tbody id="cf-tbody"></tbody></table></div>
+        </div>
+        <div id="buildcosts" class="section"><h2 class="section-header">Build Costs</h2><p class="section-subheader">2025 verified costs · Tiny cabins for additional STR units</p>
+            <div class="build-ref"><h3>Construction Reference</h3><div class="build-grid">
+                <div class="build-item"><div class="build-item-title">Primary 3/2 Cabin</div><div class="build-item-value">$337,500</div><div class="build-item-note">1,350 sqft @ $250/sqft</div></div>
+                <div class="build-item"><div class="build-item-title">Tiny Cabin</div><div class="build-item-value">$45,000</div><div class="build-item-note">~400 sqft prefab</div></div>
+                <div class="build-item"><div class="build-item-title">Site Infra</div><div class="build-item-value">$15,000</div><div class="build-item-note">Pad, electric, septic</div></div>
+                <div class="build-item"><div class="build-item-title">Total per Unit</div><div class="build-item-value">$60,000</div><div class="build-item-note">Turnkey + site</div></div>
+            </div></div>
+            <div class="table-container"><div class="table-title">🏗️ Build Analysis by Property</div><table><thead><tr><th>Property</th><th>Has Home</th><th>Primary</th><th>Tiny Cabins</th><th>Cabin Cost</th><th>Infra</th><th>Total Build</th><th>Full Investment</th></tr></thead><tbody id="build-tbody"></tbody></table></div>
+        </div>
+        <div id="questions" class="section"><h2 class="section-header">Questions for Scott</h2><p class="section-subheader">Property-specific due diligence items</p><div id="questions-list"></div></div>
+    </main>
+    <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header"><button class="modal-close" onclick="closeModal()">&times;</button><div class="modal-price" id="m-price"></div><div class="modal-title" id="m-title"></div><div class="modal-location" id="m-location"></div></div>
+            <div class="modal-body" id="m-body"></div>
+        </div>
+    </div>
+    <script>
+const data = [
+    {id:1,name:"108ac Big Laurel Rd, Creston",short:"#1 Big Laurel 108ac",address:"TBD Big Laurel Rd, Creston NC",county:"Ashe",state:"NC",price:425000,origPrice:499900,negPct:15,acres:108,ppa:3935,elev:"~3,000'",elevNum:3000,home:false,homeDesc:null,water:"Big Laurel Creek (stocked trout) — 2,000'+ frontage",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:50000,taxRate:0.51,woodedAcres:85,plantableAcres:20,pastureAcres:0,multiStr:4,infraNeeded:true,highlights:["2,000'+ stocked trout creek","$50K bridge installed","Mature hardwood timber","Multiple building sites","💰 TARGET: $425K (15% off)"],concerns:["32% price increase since 2020","400+ days on market","Hurricane Helene area"],questions:["Price history?","Seller motivation?","Condition post-Helene?"],link:"https://www.land.com/property/108.1-acres-in-ashe-county-north-carolina/21988872/"},
+    {id:2,name:"120.63ac Big Laurel Rd, Creston",short:"#2 Big Laurel 120ac",address:"2417 Big Laurel Rd, Creston NC",county:"Ashe",state:"NC",price:726000,origPrice:824900,negPct:12,acres:120.63,ppa:6018,elev:"~3,000'",elevNum:3000,home:false,homeDesc:"Outbuildings",water:"Trout water through both tracts",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:3,status:"active",strGross:55000,taxRate:0.51,woodedAcres:80,plantableAcres:30,pastureAcres:10,multiStr:5,infraNeeded:true,highlights:["Two combined surveyed tracts","Trout water on both","Can be subdivided","💰 TARGET: $726K (12% off)"],concerns:["Helene impacts mentioned","Relisted under new MLS#"],questions:["Trail condition post-Helene?","Outbuildings damaged?"],link:"https://www.homes.com/property/2417-big-laurel-rd-creston-nc/4bjk3tx5pgn55/"},
+    {id:3,name:"148ac Mountain Field Ln, Burnsville",short:"#3 Burnsville 148ac",address:"Mountain Field Lane, Burnsville NC",county:"Yancey",state:"NC",price:920000,origPrice:969900,negPct:5,acres:148,ppa:6216,elev:"~3,500'",elevNum:3500,home:false,homeDesc:null,water:"Two year-round creeks + springs",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:60000,taxRate:0.56,woodedAcres:120,plantableAcres:25,pastureAcres:0,multiStr:5,infraNeeded:true,highlights:["Views of Mount Mitchell","Borders Blue Ridge Parkway","Paved road both ends","Two graded sites","💰 TARGET: $920K (5% off)"],concerns:["Former shooting range — lead check"],questions:["Exact elevation?","Shooting range concerns?"],link:"https://www.land.com/property/148.35-acres-in-yancey-county-north-carolina/24260925/"},
+    {id:4,name:"84.3ac Flatwoods Rd, Creston",short:"#4 Flatwoods 84ac",address:"Flatwoods Rd, Creston NC",county:"Ashe",state:"NC",price:690000,origPrice:842500,negPct:18,acres:84.3,ppa:8185,elev:"~3,200'",elevNum:3200,home:false,homeDesc:"Loft barn + hay barn",water:"Big Laurel + Kilby Creek (3,000' total)",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:3,status:"active",strGross:55000,taxRate:0.51,woodedAcres:30,plantableAcres:10,pastureAcres:54,multiStr:2,infraNeeded:true,highlights:["3,000' creek frontage","54ac fenced for cattle","Near Pond Mountain Game Lands","💰 TARGET: $690K (18% off)"],concerns:["Broker owns interest","Multiple failed listings","100-yr flood plain"],questions:["Full listing history?","Flood plain extent?"],link:"https://www.landwatch.com/ashe-county-north-carolina-farms-and-ranches-for-sale/pid/425244361"},
+    {id:5,name:"58.52ac 'Honeymoon Cabin', West Jefferson",short:"#5 Honeymoon Cabin 58ac",address:"1451 Elliott Rd, West Jefferson NC",county:"Ashe",state:"NC",price:440000,origPrice:479900,negPct:8,acres:58.52,ppa:7519,elev:"~3,000'",elevNum:3000,home:true,homeDesc:"1BR/1BA log cabin (389 sqft)",water:"Creek nearby",waterThrough:false,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:30000,taxRate:0.51,woodedAcres:50,plantableAcres:8,pastureAcres:0,multiStr:3,infraNeeded:false,highlights:["Existing log cabin","2BR septic installed","<4 miles to West Jefferson","Unrestricted — STR confirmed","💰 TARGET: $440K (8% off)"],concerns:["Cabin is small (389 sqft)","Creek nearby not through"],questions:["Cabin condition?","Higher knoll elevation?"],link:"https://www.zillow.com/homedetails/1451-Elliott-Rd-West-Jefferson-NC-28694/250753337_zpid/"},
+    {id:6,name:"42.67ac Big Wilson Creek, Mouth of Wilson",short:"#6 Big Wilson 42ac",address:"896 Jefferson Hwy, Mouth of Wilson VA",county:"Grayson",state:"VA",price:858000,origPrice:975000,negPct:12,acres:42.67,ppa:20108,elev:"~3,400'",elevNum:3400,home:true,homeDesc:"2BR/3BA home (2,321 sqft)",water:"Big Wilson Creek (stocked trout) + Pond",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:65000,taxRate:0.54,woodedAcres:30,plantableAcres:10,pastureAcres:5,multiStr:2,infraNeeded:false,highlights:["Stocked trout creek THROUGH","Fishing pond on-site","2BR/3BA home","💰 TARGET: $858K (12% off)"],concerns:["Flood plain disclosure","Premium pricing ($22,856/ac)","Below 40ac minimum"],questions:["Homestead condition?","Flood plain location?"],link:"https://www.compass.com/homedetails/896-Jefferson-Hwy-Mouth-Of-Wilson-VA-24363/21AMUL_pid/"},
+    {id:7,name:"49.18ac Elk Creek Farm",short:"#7 Elk Creek 49ac ⚠️",address:"1170 Pilgrim Fork Rd, Elk Creek VA",county:"Grayson",state:"VA",price:550000,acres:49.18,ppa:11185,elev:"~3,200'",elevNum:3200,home:true,homeDesc:"2BR/2BA renovated + Bunkhouse",water:"Bold creek through property",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"under-contract",strGross:55000,taxRate:0.54,woodedAcres:35,plantableAcres:10,pastureAcres:10,multiStr:2,infraNeeded:false,highlights:["Fully renovated 2016","Separate bunkhouse","Hot tub with views"],concerns:["UNDER CONTRACT 12/29","$40K price reduction"],questions:["Chance it falls through?"],link:"https://www.zillow.com/homedetails/1170-Pilgrim-Fork-Rd-Elk-Creek-VA-24326/233242212_zpid/"},
+    {id:8,name:"63.08ac Trout Branch",short:"#8 Trout Branch 63ac",address:"Trout Branch, Grayson County VA",county:"Grayson",state:"VA",price:202000,origPrice:224998,negPct:10,acres:63.08,ppa:3202,elev:"~3,000'",elevNum:3000,home:false,homeDesc:null,water:"Trout Branch (bold stream)",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:40000,taxRate:0.54,woodedAcres:55,plantableAcres:8,pastureAcres:0,multiStr:3,infraNeeded:true,highlights:["Bold stream THROUGH","Multiple cabin sites","Very secluded","Best raw land deal ($3,202/ac)","💰 TARGET: $202K (10% off)"],concerns:["Access unknown","Power availability unknown"],questions:["Road condition?","Power available?"],link:"https://www.farmflip.com/farm/403539"},
+    {id:9,name:"50.73ac Big Wilson Creek",short:"#9 Big Wilson 50ac",address:"TBD Stewart Hollow Ln, Mouth of Wilson VA",county:"Grayson",state:"VA",price:171000,origPrice:189900,negPct:10,acres:50.73,ppa:3371,elev:"~3,200'",elevNum:3200,home:false,homeDesc:null,water:"Big Wilson Creek frontage",waterThrough:false,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:45000,taxRate:0.54,woodedAcres:40,plantableAcres:10,pastureAcres:0,multiStr:2,infraNeeded:true,highlights:["Big Wilson Creek frontage","Near Grayson Highlands SP","Excellent value ($3,371/ac)","💰 TARGET: $171K (10% off)"],concerns:["Listed as 'timber investment'","Creek frontage vs through unclear"],questions:["Recent timber harvest?","Creek frontage or through?"],link:"https://www.landandfarmsrealty.com/virginia/mountains/grayson/80998"},
+    {id:10,name:"88.35ac Blue Ridge Farm, Independence",short:"#10 Independence 88ac",address:"516 Cherrywood Lane, Independence VA",county:"Grayson",state:"VA",price:616000,origPrice:699900,negPct:12,acres:88.35,ppa:6973,elev:"~3,000'",elevNum:3000,home:false,homeDesc:"40x60 barn (new)",water:"Bold year-round creek",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:3,status:"active",strGross:50000,taxRate:0.54,woodedAcres:60,plantableAcres:15,pastureAcres:20,multiStr:3,infraNeeded:false,highlights:["New 40x60 barn","Well + septic installed","Dual state road frontage","💰 TARGET: $616K (12% off)"],concerns:["Conflicting acreage (88 vs 101)","Two MLS numbers"],questions:["Exact acreage?","Why two MLS#?"],link:"https://www.graysonmountainrealestate.com/listings/blue-ridge-mountain-farm-in-grayson-county-virginia/"},
+    {id:11,name:"128ac Elleber Sods, Pocahontas County",short:"#11 Elleber Sods 128ac ⭐",address:"Elleber Sods Rd, Bartow WV",county:"Pocahontas",state:"WV",price:230000,origPrice:250000,negPct:8,acres:128,ppa:1797,elev:"2,574-3,166'",elevNum:2900,home:false,homeDesc:null,water:"Flowing stream through property",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:40000,taxRate:0.50,woodedAcres:120,plantableAcres:5,pastureAcres:0,multiStr:4,infraNeeded:true,highlights:["⭐ BEST VALUE ($1,797/ac)","Monongahela NF on 3 sides","Darkest skies in Eastern US","Stream through property","💰 TARGET: $230K (8% off)"],concerns:["Very remote (~9hrs from FL)","Off-grid build required"],questions:["Road condition?","Closest power?"],link:"https://www.land.com/property/128-acres-in-pocahontas-county-west-virginia/23269829/"},
+    {id:12,name:"200ac Rock House Rd, Hot Springs",short:"#12 Hot Springs 200ac ⭐⭐",address:"Rock House Rd, Hot Springs NC",county:"Madison",state:"NC",price:1400000,origPrice:1650000,negPct:15,acres:200,ppa:7000,elev:"3,000-4,000'+",elevNum:3500,home:true,homeDesc:"3BR/2BA modern log cabin",water:"Charlotte Branch stream (originates on property)",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:75000,taxRate:0.36,woodedAcres:170,plantableAcres:25,pastureAcres:0,multiStr:6,infraNeeded:false,highlights:["⭐ PROVEN STR — 'Booked constantly'","200 acres wilderness","Modern 3BR/2BA log cabin","3,000-4,000'+ elevation","💰 TARGET: $1.4M (15% off)"],concerns:["Helene area — verify condition","Premium list price ($1.65M)"],questions:["Comps for Madison 100+ ac?","Helene damage?","STR revenue history?"],link:"https://www.mossyoakproperties.com/property/200-private-acres-with-gorgeous-cabin-madison-north-carolina/37239/"},
+    {id:13,name:"138ac Pigeon Roost Creek, Mitchell County",short:"#13 Mitchell 138ac",address:"Pigeon Roost Creek, Green Mountain NC",county:"Mitchell",state:"NC",price:1360000,origPrice:1599995,negPct:15,acres:138,ppa:9855,elev:"~3,000'+",elevNum:3100,home:true,homeDesc:"2BR/1BA older home (fixer)",water:"Pigeon Roost Creek (1,700') + Trout Pond",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:55000,taxRate:0.56,woodedAcres:120,plantableAcres:15,pastureAcres:0,multiStr:5,infraNeeded:false,highlights:["MOTIVATED SELLER","Spring-fed TROUT POND","1,700' creek frontage","Borders 15,000ac Pisgah NF","💰 TARGET: $1.36M (15% off)"],concerns:["Older home needs assessment","Price reduced from ~$1.8M"],questions:["Elevation range?","Home condition?"],link:"https://www.mossyoakproperties.com/property/138-acres-of-pure-mountain-paradise-mitchell-north-carolina/55654/"},
+    {id:14,name:"60ac Hot Springs, Borders Pisgah NF",short:"#14 Hot Springs 60ac",address:"Hot Springs, Madison County NC",county:"Madison",state:"NC",price:404000,origPrice:449000,negPct:10,acres:60,ppa:6733,elev:"~3,000'",elevNum:3000,home:false,homeDesc:null,water:"Not confirmed",waterThrough:false,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:50000,taxRate:0.36,woodedAcres:50,plantableAcres:10,pastureAcres:0,multiStr:2,infraNeeded:true,highlights:["Borders Pisgah NF","Multiple homesites","Good entry price ($449K)","💰 TARGET: $404K (10% off)"],concerns:["No structure","Water unconfirmed"],questions:["Water features?","Elevation range?"],link:"https://www.mossyoakproperties.com/property/private-60-acres-bordering-pisgah-national-forest-madison-north-carolina/78997/"},
+    {id:15,name:"29.16ac Hot Springs, Adjoins Pisgah NF",short:"#15 Hot Springs 29ac",address:"Hot Springs, Madison County NC",county:"Madison",state:"NC",price:337000,origPrice:375000,negPct:10,acres:29.16,ppa:11556,elev:"~3,000'",elevNum:3000,home:false,homeDesc:null,water:"Not confirmed",waterThrough:false,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:3,status:"active",strGross:45000,taxRate:0.36,woodedAcres:25,plantableAcres:3,pastureAcres:0,multiStr:1,infraNeeded:true,highlights:["Adjoins Pisgah NF","Power at homesite","💰 TARGET: $337K (10% off)"],concerns:["Below 40ac minimum","Higher $/acre ($12,860)"],questions:["Combine with adjacent?"],link:"https://www.mossyoakproperties.com/property/29-acres-bordering-pisgah-national-forest-madison-north-carolina/79082/"},
+    {id:16,name:"202ac Nolichucky River Lodge",short:"#16 Nolichucky 202ac 💎",address:"2736 White Oaks Flat Road, Green Mountain NC",county:"Yancey",state:"NC",price:2860000,origPrice:3250000,negPct:12,acres:202,ppa:14158,elev:"~2,400'",elevNum:2400,home:true,homeDesc:"4BR/4BA Lodge + Guest House + River House",water:"Nolichucky River (1/4 mi) + Trout Pond + Bass Pond",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:"1a",status:"active",strGross:150000,taxRate:0.56,woodedAcres:150,plantableAcres:0,pastureAcres:20,multiStr:5,infraNeeded:false,highlights:["💎 TURNKEY LUXURY COMPOUND","Nearly surrounded by USFS","1/4 mile river frontage","Trout pond + bass pond","💰 TARGET: $2.86M (12% off)"],concerns:["Premium price ($3.25M)","Above stated budget","Below 3,000' elevation"],questions:["Helene impact?","Structural assessments?"],link:"https://www.landwatch.com/yancey-county-north-carolina-recreational-property-for-sale/pid/410983111"},
+    {id:17,name:"43.97ac Cabbage Creek Farm, Creston",short:"#17 Cabbage Creek 44ac",address:"1411 Cabbage Creek Road, Creston NC",county:"Ashe",state:"NC",price:413000,origPrice:449000,negPct:8,acres:43.97,ppa:9393,elev:"2,900-3,200'",elevNum:3050,home:true,homeDesc:"3BR/1BA farmhouse",water:"Small stream + Springs",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:40000,taxRate:0.51,woodedAcres:25,plantableAcres:15,pastureAcres:15,multiStr:2,infraNeeded:false,highlights:["Existing 3BR farmhouse","Rolling pasture","Springs throughout","💰 TARGET: $413K (8% off)"],concerns:["1BA limitation","Barely over 40ac"],questions:["Exact elevation?","Farmhouse condition?"],link:"https://www.landwatch.com/ashe-county-north-carolina-homes-for-sale/pid/424452265"},
+    {id:18,name:"200ac Rock House Rd @ $1.2M",short:"#18 Hot Springs 200ac @$1.2M ⭐⭐",address:"Rock House Rd, Hot Springs NC",county:"Madison",state:"NC",price:1200000,origPrice:1650000,negPct:27,acres:200,ppa:6000,elev:"3,000-4,000'+",elevNum:3500,home:true,homeDesc:"3BR/2BA modern log cabin",water:"Charlotte Branch stream (originates on property)",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:75000,taxRate:0.36,woodedAcres:170,plantableAcres:25,pastureAcres:0,multiStr:6,infraNeeded:false,highlights:["⭐ PROVEN STR — 'Booked constantly'","200 acres wilderness","Modern 3BR/2BA log cabin","💰 AGGRESSIVE TARGET: $1.2M (27% off)"],concerns:["Helene area — verify condition","Requires negotiation to $1.2M"],questions:["Comps for Madison 100+ ac?","Will seller accept $1.2M?"],link:"https://www.mossyoakproperties.com/property/200-private-acres-with-gorgeous-cabin-madison-north-carolina/37239/"},
+    {id:19,name:"60ac Anderson Cove Rd, Marshall",short:"#19 Anderson Cove 60ac 💰",address:"Anderson Cove Rd, Marshall NC",county:"Madison",state:"NC",price:222000,origPrice:234111,negPct:5,acres:60,ppa:3700,elev:"~3,000'+",elevNum:3000,home:false,homeDesc:null,water:"TBD — verify water features",waterThrough:false,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:40000,taxRate:0.36,woodedAcres:50,plantableAcres:10,pastureAcres:0,multiStr:3,infraNeeded:true,highlights:["💰 EXCELLENT VALUE ($3,700/ac)","Well-maintained ridge road","Multiple building sites","💰 TARGET: $222K (5% off)"],concerns:["No structure — full build required","Water features unconfirmed"],questions:["Water sources on property?","Power availability?"],link:"https://www.landwatch.com/madison-county-north-carolina-recreational-property-for-sale/pid/419488921"},
+    {id:20,name:"96.84ac North Shoal Creek, Murphy",short:"#20 N. Shoal Creek 97ac 🌊",address:"North Shoal Creek, Murphy NC",county:"Cherokee",state:"NC",price:585000,origPrice:650000,negPct:10,acres:96.84,ppa:6041,elev:"~2,500-3,000'",elevNum:2750,home:false,homeDesc:null,water:"2,000+ ft of 30-foot-wide creek THROUGH property",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:50000,taxRate:0.46,woodedAcres:80,plantableAcres:15,pastureAcres:10,multiStr:4,infraNeeded:true,highlights:["🌊 BOLD CREEK — 2,000'+ through property","30-foot-wide year-round creek","USFS boundary on south side","💰 TARGET: $585K (10% off)"],concerns:["May be slightly below 3,000' elevation","No structure — full build required"],questions:["Exact elevation range?","Creek fishable?"],link:"https://www.land.com/property/1378-morrow-road-murphy-north-carolina-28906/24976449/"},
+
+    {id:22,name:"175.95ac Little Horse Path, Lansing",short:"#22 Lansing 176ac 🌲⭐⭐",address:"115 Little Horse Path, Lansing NC",county:"Ashe",state:"NC",price:968000,origPrice:1100000,negPct:12,acres:175.95,ppa:5501,elev:"~2,800-3,200'",elevNum:3000,home:true,homeDesc:"1BR/1BA cabin (1,330 sqft)",water:"Creek THROUGH property with covered bridge + springs",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:55000,taxRate:0.51,woodedAcres:150,plantableAcres:20,pastureAcres:5,multiStr:6,infraNeeded:false,highlights:["🌲 TIMBER VALUE $268K-$309K (2021 cruise)","Creek through property w/ COVERED BRIDGE","Largest acreage (176ac)","Multiple homesites","💰 TARGET: $968K (12% off)"],concerns:["Elevation needs verification","175 days on market"],questions:["Exact elevation range?","Timber cruise still valid?"],link:"https://www.asherealestate.com/listing/254944-115-little-horse-path-lansing-nc-28643/"},
+    {id:23,name:"140ac Glade Valley Road, Alleghany",short:"#23 Glade Valley 140ac 🎣",address:"TBD Glade Valley Road, Glade Valley NC",county:"Alleghany",state:"NC",price:898000,origPrice:997500,negPct:10,acres:140,ppa:6414,elev:"~2,800-3,200'",elevNum:3000,home:false,homeDesc:null,water:"¾ mile Brush Creek frontage — STOCKED TROUT",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:50000,taxRate:0.47,woodedAcres:130,plantableAcres:10,pastureAcres:0,multiStr:5,infraNeeded:true,highlights:["🎣 ¾ MILE STOCKED TROUT STREAM","140 acres unrestricted","ATV trails throughout","💰 TARGET: $898K (10% off)"],concerns:["No structure — full build required","Creek is boundary not through"],questions:["Exact elevation range?","Creek fishable year-round?"],link:"https://www.mountainnchomes.com/idx/mls-251517-tbd_glade_valley_road_glade_valley_nc_28627"},
+    {id:24,name:"87.32ac Elk Knob Road, Laurel Springs",short:"#24 Elk Knob 87ac 💰",address:"TBD Elk Knob Road, Laurel Springs NC",county:"Alleghany",state:"NC",price:441000,origPrice:565500,negPct:22,acres:87.32,ppa:5051,elev:"~3,000'+",elevNum:3100,home:false,homeDesc:null,water:"Stream on property",waterThrough:true,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:2,status:"active",strGross:45000,taxRate:0.47,woodedAcres:85,plantableAcres:5,pastureAcres:0,multiStr:3,infraNeeded:true,highlights:["💰 BEST NEGOTIATION TARGET ($5,051/ac)","Near Blue Ridge Parkway","905 days on market = MOTIVATED","💰 TARGET: $441K (22% off!)"],concerns:["No structure — full build required","Long time on market"],questions:["Why so long on market?","Access road condition?"],link:"https://www.zillow.com/homedetails/TBD-Elk-Knob-Rd-Laurel-Springs-NC-28644/2058411791_zpid/"},
+    {id:25,name:"92ac US Hwy 18 North, Ennice",short:"#25 Ennice 92ac 🎣🏔️",address:"TBD US Hwy 18 North, Ennice NC",county:"Alleghany",state:"NC",price:584000,origPrice:634800,negPct:8,acres:92,ppa:6348,elev:"~3,000'+",elevNum:3100,home:false,homeDesc:null,water:"West Chestnut Creek — NATIVE TROUT stream",waterThrough:true,trout:true,darkSkies:true,unrestricted:true,hardwood:true,tier:1,status:"active",strGross:50000,taxRate:0.47,woodedAcres:85,plantableAcres:7,pastureAcres:0,multiStr:3,infraNeeded:true,highlights:["🎣 NATIVE TROUT STREAM","🏔️ ADJOINS BLUE RIDGE PARKWAY","360° mountain views from top","Road already built to top","💰 TARGET: $584K (8% off)"],concerns:["No structure — full build required"],questions:["Power availability?","Adjoining land price?"],link:"https://www.redfin.com/NC/Ennice/TBD-US-Hwy-18-North-28623/home/191618637"},
+    {id:26,name:"93.45ac Loves Knob Road, Sugar Grove",short:"#26 Sugar Grove 93ac",address:"226 Loves Knob Road, Sugar Grove NC",county:"Watauga",state:"NC",price:836000,origPrice:950000,negPct:12,acres:93.45,ppa:8946,elev:"~2,800-3,200'",elevNum:3000,home:true,homeDesc:"2BR/1BA (1,053 sqft)",water:"TBD — verify water features",waterThrough:false,trout:false,darkSkies:true,unrestricted:true,hardwood:true,tier:3,status:"active",strGross:45000,taxRate:0.57,woodedAcres:80,plantableAcres:10,pastureAcres:5,multiStr:3,infraNeeded:false,highlights:["Existing 2BR/1BA cabin","93+ acres in Watauga County","💰 TARGET: $836K (12% off)"],concerns:["Highest $/acre ($10,166)","Water features unconfirmed"],questions:["Water on property?","Cabin condition?"],link:"https://www.landwatch.com/watauga-county-north-carolina-homes-for-sale/pid/424947468"}
+];
+const buildCosts={primary:337500,tinyCabin:45000,tinyCabinInfra:15000,infrastructure:45000};
+const taxPrograms={puv:{reduction:0.85},forestry:{reduction:0.85},combined:{reduction:0.85}};
+const opCosts={mgmtPct:0.30,insurance:2500,starlink:1440,utilities:600,maintenancePct:0.01};
+const pastureRates={WV:14,NC:37,VA:47};
+const fmt=n=>'$'+n.toLocaleString();
+const fmtK=n=>n>=1000000?'$'+(n/1000000).toFixed(2)+'M':n>=1000?'$'+Math.round(n/1000)+'K':'$'+n;
+function calcSTRNet(p){return p.home?p.strGross*(1-opCosts.mgmtPct):0;}
+function calcXmas(p){return p.elevNum>=3000?p.plantableAcres*150:0;}
+function calcTimber(p){return p.woodedAcres*2500;}
+function calcPasture(p){return p.pastureAcres*(pastureRates[p.state]||37);}
+function calcTaxStrategy(p){const baseTax=(p.price/100)*p.taxRate;const reducedTax=baseTax*0.15;const savings=baseTax-reducedTax;return{baseTax,reducedTax,savings,program:p.woodedAcres>=20?'PUV + Forestry':'PUV Only'};}
+function calcImmediate(p){return calcSTRNet(p)+calcTaxSavings(p)+calcPasture(p);}
+function calcTaxSavings(p){return (p.price/100)*p.taxRate*0.85;}
+function calcPotential(p){const str=p.home?0:p.strGross*(1-opCosts.mgmtPct),addl=(p.multiStr-1)*30000;return str+addl+calcXmas(p);}
+function calcFull(p){return calcImmediate(p)+calcPotential(p);}
+function calcBuild(p){const primary=p.home?0:buildCosts.primary;const infra=p.infraNeeded?buildCosts.infrastructure:0;const addlUnits=Math.max(0,p.multiStr-1);const addlCost=addlUnits*(buildCosts.tinyCabin+buildCosts.tinyCabinInfra);const total=primary+infra+addlCost;return{primary,infra,addlUnits,addlCost,total,fullInvestment:p.price+total};}
+function calcFullCosts(p,yrs=30){const bc=calcBuild(p);const fullAmount=bc.fullInvestment;const down=fullAmount*0.05;const loan=fullAmount-down;const r=0.06/12;const n=yrs*12;const monthly=loan*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);const annual=monthly*12;const totalInterest=monthly*n-loan;const taxStrategy=calcTaxStrategy(p);const tax=taxStrategy.reducedTax;const maint=fullAmount*opCosts.maintenancePct;const util=opCosts.starlink+opCosts.utilities;return{mortgage:annual,tax,insurance:opCosts.insurance,maintenance:maint,utilities:util,total:annual+tax+opCosts.insurance+maint+util,monthly:(annual+tax+opCosts.insurance+maint+util)/12,fullInvestment:fullAmount,down,loan,mortgageMonthly:monthly,totalInterest,taxStrategy};}
+function checkReqs(p){return{acres40:{met:p.acres>=40,label:'40+ acres'},waterThrough:{met:p.waterThrough,label:'Water through'},elev3000:{met:p.elevNum>=3000,label:"3,000'+ elev"},unrestricted:{met:p.unrestricted,label:'Unrestricted'},budget:{met:p.price<=1500000,label:'Under $1.5M'},hardwood:{met:p.hardwood,label:'Hardwood'}};}
+function renderCard(p){
+    const reqs=checkReqs(p);
+    const bc=calcBuild(p);
+    const costs20=calcFullCosts(p,20);
+    const costs30=calcFullCosts(p,30);
+    const immediate=calcImmediate(p),full=calcFull(p);
+    const netCF=full-costs30.total;
+    const tierClass=p.tier==='1a'?'tier-1a':'tier-'+p.tier,tierLabel=p.tier==='1a'?'Tier 1A':'Tier '+p.tier;
+    const cf20=full-costs20.total;
+    const reqsHtml=Object.values(reqs).map(r=>'<div class="req-item"><span class="'+(r.met?'req-check':'req-x')+'">'+(r.met?'✓':'✗')+'</span>'+r.label+'</div>').join('');
+    const flagsHtml=p.concerns.length?'<div class="card-flags"><div class="flags-title">Concerns</div>'+p.concerns.slice(0,2).map(c=>'<div class="flag-item">'+c+'</div>').join('')+'</div>':'';
+    const taxHtml='<div class="card-tax-badge">🏛️ '+fmt(Math.round(costs30.taxStrategy.baseTax))+' → '+fmt(Math.round(costs30.taxStrategy.reducedTax))+'</div>';
+    return '<div class="card '+(p.status==='under-contract'?'under-contract':'')+'" onclick="openModal('+p.id+')"><div class="card-header"><div class="card-tier '+tierClass+'">'+tierLabel+'</div><div class="card-price">'+fmtK(p.price)+'</div><div class="card-name">'+p.name+'</div><div class="card-location">'+p.county+' County, '+p.state+'</div>'+taxHtml+'</div><div class="card-stats"><div class="card-stat"><div class="card-stat-value">'+p.acres+'</div><div class="card-stat-label">Acres</div></div><div class="card-stat"><div class="card-stat-value">'+fmtK(p.ppa)+'</div><div class="card-stat-label">$/Acre</div></div><div class="card-stat"><div class="card-stat-value">'+p.elev+'</div><div class="card-stat-label">Elevation</div></div><div class="card-stat"><div class="card-stat-value">'+(p.home?'✓':'—')+'</div><div class="card-stat-label">Home</div></div></div><div class="card-requirements"><div class="req-title">Requirements</div><div class="req-grid">'+reqsHtml+'</div></div><div class="card-financials"><div class="fin-row"><span>Full Investment</span><span style="font-weight:600">'+fmtK(bc.fullInvestment)+'</span></div><div class="fin-row"><span>Immediate Income</span><span class="'+(immediate>0?'fin-positive':'')+'">'+fmtK(Math.round(immediate))+'/yr</span></div><div class="fin-row"><span>Full Potential</span><span class="fin-positive">'+fmtK(Math.round(full))+'/yr</span></div><div class="fin-row highlight"><span>Annual Costs (6%/30yr)</span><span class="fin-negative">-'+fmtK(Math.round(costs30.total))+'/yr</span></div><div class="mortgage-grid"><div class="mortgage-box"><div class="mortgage-box-title">20-YEAR</div><div class="mortgage-box-value">'+fmtK(Math.round(costs20.mortgageMonthly))+'/mo</div><div class="mortgage-box-sub">CF: <span class="'+(cf20>=0?'fin-positive':'fin-negative')+'">'+fmtK(Math.round(cf20))+'/yr</span></div></div><div class="mortgage-box"><div class="mortgage-box-title">30-YEAR</div><div class="mortgage-box-value">'+fmtK(Math.round(costs30.mortgageMonthly))+'/mo</div><div class="mortgage-box-sub">CF: <span class="'+(netCF>=0?'fin-positive':'fin-negative')+'">'+fmtK(Math.round(netCF))+'/yr</span></div></div></div><div class="fin-row total"><span>Net Cash Flow (Full/30yr)</span><span>'+(netCF>=0?'+':'')+fmtK(Math.round(netCF))+'/yr</span></div></div>'+flagsHtml+'</div>';
+}
+function init(){
+    const totalAcres=data.reduce((sum,p)=>sum+p.acres,0);
+    const avgPPA=Math.round(data.reduce((sum,p)=>sum+p.ppa,0)/data.length);
+    document.getElementById('total-properties').textContent=data.length;
+    document.getElementById('total-acres').textContent=Math.round(totalAcres).toLocaleString();
+    document.getElementById('avg-ppa').textContent='$'+Math.round(avgPPA/1000)+'K';
+    document.getElementById('overview-grid').innerHTML=data.map(renderCard).join('');
+    document.getElementById('tier1-grid').innerHTML=data.filter(p=>p.tier===1||p.tier==='1a').map(renderCard).join('');
+    document.getElementById('tier2-grid').innerHTML=data.filter(p=>p.tier===2).map(renderCard).join('');
+    document.getElementById('tier3-grid').innerHTML=data.filter(p=>p.tier===3).map(renderCard).join('');
+    document.getElementById('income-tbody').innerHTML=data.map(p=>{const c=calcFullCosts(p,30),str=calcSTRNet(p),xmas=calcXmas(p),timber=calcTimber(p);const ts=c.taxStrategy,total=calcFull(p),net=total-c.total;return '<tr><td class="table-property">'+p.short+'</td><td style="color:'+(p.home?'var(--forest)':'var(--silver)')+'">'+(p.home?'✓':'✗')+'</td><td>'+(str>0?fmt(Math.round(str)):'—')+'</td><td>'+(xmas>0?fmt(xmas):'—')+'</td><td>'+fmt(timber)+'</td><td style="color:var(--forest)">'+fmt(Math.round(ts.savings))+'</td><td style="font-weight:600">'+fmt(Math.round(total))+'</td><td style="color:var(--rose)">'+fmt(Math.round(c.total))+'</td><td style="color:'+(net>=0?'var(--forest)':'var(--rose)')+';font-weight:600">'+(net>=0?'+':'')+fmt(Math.round(net))+'</td></tr>';}).join('');
+    document.getElementById('costs-tbody').innerHTML=data.map(p=>{const c=calcFullCosts(p,30);return '<tr><td class="table-property">'+p.short+'</td><td>'+fmt(Math.round(c.mortgage))+'</td><td>'+fmt(Math.round(c.tax))+'</td><td>'+fmt(c.insurance)+'</td><td>'+fmt(Math.round(c.maintenance))+'</td><td>'+fmt(c.utilities)+'</td><td style="font-weight:600">'+fmt(Math.round(c.total))+'</td><td style="font-weight:600">'+fmt(Math.round(c.monthly))+'</td></tr>';}).join('');
+    document.getElementById('costsvrev-tbody').innerHTML=data.map(p=>{const c=calcFullCosts(p,30),imm=calcImmediate(p),full=calcFull(p),immNet=imm-c.total,fullNet=full-c.total;return '<tr><td class="table-property">'+p.short+'</td><td>'+fmt(Math.round(c.total))+'</td><td>'+fmt(Math.round(imm))+'</td><td style="color:'+(immNet>=0?'var(--forest)':'var(--rose)')+';font-weight:600">'+(immNet>=0?'+':'')+fmt(Math.round(immNet))+'</td><td>'+fmt(Math.round(full))+'</td><td style="color:'+(fullNet>=0?'var(--forest)':'var(--rose)')+';font-weight:700">'+(fullNet>=0?'+':'')+fmt(Math.round(fullNet))+'</td></tr>';}).join('');
+    document.getElementById('mortgage-tbody').innerHTML=data.map(p=>{const c20=calcFullCosts(p,20),c30=calcFullCosts(p,30);const sav=c20.mortgageMonthly-c30.mortgageMonthly;const extra=c30.totalInterest-c20.totalInterest;return '<tr><td class="table-property">'+p.short+'</td><td>'+fmt(c30.fullInvestment)+'</td><td>'+fmt(Math.round(c20.mortgageMonthly))+'</td><td>'+fmt(Math.round(c30.mortgageMonthly))+'</td><td style="color:var(--forest)">-'+fmt(Math.round(sav))+'</td><td>'+fmt(Math.round(c20.totalInterest))+'</td><td>'+fmt(Math.round(c30.totalInterest))+'</td><td style="color:var(--rose)">+'+fmt(Math.round(extra))+'</td></tr>';}).join('');
+    document.getElementById('cf-tbody').innerHTML=data.map(p=>{const c20=calcFullCosts(p,20),c30=calcFullCosts(p,30);const full=calcFull(p),cf20=full-c20.total,cf30=full-c30.total;return '<tr><td class="table-property">'+p.short+'</td><td>'+fmt(Math.round(full))+'</td><td style="color:var(--rose)">'+fmt(Math.round(c20.total))+'</td><td style="color:'+(cf20>=0?'var(--forest)':'var(--rose)')+';font-weight:600">'+(cf20>=0?'+':'')+fmt(Math.round(cf20))+'</td><td style="color:var(--rose)">'+fmt(Math.round(c30.total))+'</td><td style="color:'+(cf30>=0?'var(--forest)':'var(--rose)')+';font-weight:600">'+(cf30>=0?'+':'')+fmt(Math.round(cf30))+'</td></tr>';}).join('');
+    document.getElementById('build-tbody').innerHTML=data.map(p=>{const bc=calcBuild(p);return '<tr><td class="table-property">'+p.short+'</td><td style="color:'+(p.home?'var(--forest)':'var(--silver)')+'">'+(p.home?'✓':'✗')+'</td><td>'+(bc.primary>0?fmt(bc.primary):'—')+'</td><td>'+(bc.addlUnits>0?bc.addlUnits+' × $60K':'—')+'</td><td>'+(bc.addlCost>0?fmt(bc.addlCost):'—')+'</td><td>'+(bc.infra>0?fmt(bc.infra):'—')+'</td><td style="font-weight:600">'+(bc.total>0?fmt(bc.total):'—')+'</td><td style="font-weight:700">'+fmt(bc.fullInvestment)+'</td></tr>';}).join('');
+    document.getElementById('questions-list').innerHTML=data.filter(p=>p.questions&&p.questions.length).map(p=>'<div class="info-card" style="margin-bottom:1rem;text-align:left"><div class="info-card-title" style="font-size:1rem;color:var(--charcoal)">'+p.short+'</div><div style="color:var(--silver);font-size:0.85rem;margin-bottom:0.75rem">'+p.county+' County, '+p.state+' · '+p.acres+' acres · '+fmtK(p.price)+'</div><ul class="modal-list questions">'+p.questions.map(q=>'<li>'+q+'</li>').join('')+'</ul></div>').join('');
+}
+function openModal(id){
+    const p=data.find(x=>x.id===id);if(!p)return;
+    const reqs=checkReqs(p),bc=calcBuild(p);
+    const costs30=calcFullCosts(p,30);
+    const ts=costs30.taxStrategy;
+    const immediate=calcImmediate(p),full=calcFull(p);
+    const costs20=calcFullCosts(p,20);
+    const strNet=calcSTRNet(p);
+    const xmas=calcXmas(p);
+    const timber=calcTimber(p);
+    const pasture=calcPasture(p);
+    const potentialStr=p.home?0:p.strGross*(1-opCosts.mgmtPct);
+    const addlStrIncome=(p.multiStr-1)*30000;
+    const netCF20=full-costs20.total;
+    const netCF30=full-costs30.total;
+    const immNet=immediate-costs30.total;
+    
+    document.getElementById('m-price').textContent=fmt(p.price)+(p.origPrice?' (was '+fmt(p.origPrice)+')':'');
+    document.getElementById('m-title').textContent=p.name;
+    document.getElementById('m-location').textContent=p.address+' · '+p.county+' County, '+p.state;
+    
+    let html='<div class="modal-section"><div class="modal-section-title">Property Details</div><div class="modal-grid">';
+    html+='<div><div class="modal-detail-label">Acreage</div><div class="modal-detail-value">'+p.acres+' acres</div></div>';
+    html+='<div><div class="modal-detail-label">Price/Acre</div><div class="modal-detail-value">'+fmt(p.ppa)+'</div></div>';
+    html+='<div><div class="modal-detail-label">Elevation</div><div class="modal-detail-value">'+p.elev+'</div></div>';
+    html+='<div><div class="modal-detail-label">Structure</div><div class="modal-detail-value">'+(p.home?p.homeDesc:'None')+'</div></div>';
+    html+='<div><div class="modal-detail-label">Water</div><div class="modal-detail-value">'+p.water+'</div></div>';
+    html+='<div><div class="modal-detail-label">Wooded/Plantable</div><div class="modal-detail-value">'+p.woodedAcres+' / '+p.plantableAcres+' ac</div></div>';
+    html+='</div></div>';
+    
+    // BUILD COSTS SECTION
+    html+='<div class="modal-section"><div class="modal-section-title">🏗️ Build Costs & Full Investment</div>';
+    html+='<table style="width:100%;font-size:0.85rem;border-collapse:collapse">';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Land Purchase (Negotiated)</td><td style="text-align:right;font-weight:600">'+fmt(p.price)+'</td></tr>';
+    if(bc.primary>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Primary Cabin Build (3BR/2BA)</td><td style="text-align:right">'+fmt(bc.primary)+'</td></tr>';
+    if(bc.infra>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Site Infrastructure (well, septic, electric)</td><td style="text-align:right">'+fmt(bc.infra)+'</td></tr>';
+    if(bc.addlUnits>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Tiny Cabins ('+bc.addlUnits+' × $60K each)</td><td style="text-align:right">'+fmt(bc.addlCost)+'</td></tr>';
+    html+='<tr style="background:var(--slate);color:white"><td style="padding:0.75rem 0.5rem;font-weight:600">TOTAL INVESTMENT</td><td style="text-align:right;font-weight:700;padding-right:0.5rem">'+fmt(bc.fullInvestment)+'</td></tr>';
+    html+='</table>';
+    html+='<div style="margin-top:0.75rem;font-size:0.75rem;color:var(--steel)">Down Payment (5%): '+fmt(Math.round(costs30.down))+' · Loan Amount: '+fmt(Math.round(costs30.loan))+'</div>';
+    html+='</div>';
+    
+    // ANNUAL COSTS SECTION
+    html+='<div class="modal-section"><div class="modal-section-title">📊 Annual Cost of Ownership (6% / 30yr)</div>';
+    html+='<table style="width:100%;font-size:0.85rem;border-collapse:collapse">';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Mortgage Payment</td><td style="text-align:right">'+fmt(Math.round(costs30.mortgage))+'/yr</td><td style="text-align:right;color:var(--steel);font-size:0.75rem">'+fmt(Math.round(costs30.mortgageMonthly))+'/mo</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Property Tax (after PUV reduction)</td><td style="text-align:right">'+fmt(Math.round(costs30.tax))+'/yr</td><td style="text-align:right;color:var(--steel);font-size:0.75rem">'+fmt(Math.round(costs30.tax/12))+'/mo</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">STR Insurance</td><td style="text-align:right">'+fmt(costs30.insurance)+'/yr</td><td style="text-align:right;color:var(--steel);font-size:0.75rem">'+fmt(Math.round(costs30.insurance/12))+'/mo</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Maintenance (1% of investment)</td><td style="text-align:right">'+fmt(Math.round(costs30.maintenance))+'/yr</td><td style="text-align:right;color:var(--steel);font-size:0.75rem">'+fmt(Math.round(costs30.maintenance/12))+'/mo</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Utilities (Starlink + misc)</td><td style="text-align:right">'+fmt(costs30.utilities)+'/yr</td><td style="text-align:right;color:var(--steel);font-size:0.75rem">'+fmt(Math.round(costs30.utilities/12))+'/mo</td></tr>';
+    html+='<tr style="background:var(--rose-glow)"><td style="padding:0.75rem 0.5rem;font-weight:600">TOTAL ANNUAL COSTS</td><td style="text-align:right;font-weight:700;color:var(--rose)">'+fmt(Math.round(costs30.total))+'/yr</td><td style="text-align:right;font-weight:600;color:var(--rose)">'+fmt(Math.round(costs30.monthly))+'/mo</td></tr>';
+    html+='</table></div>';
+    
+    // IMMEDIATE REVENUE SECTION
+    html+='<div class="modal-section"><div class="modal-section-title">💵 Immediate Revenue (Day 1)</div>';
+    html+='<table style="width:100%;font-size:0.85rem;border-collapse:collapse">';
+    if(strNet>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Primary STR Net (after 30% mgmt)</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(strNet))+'/yr</td></tr>';
+    if(strNet===0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0;color:var(--steel)">Primary STR (no existing home)</td><td style="text-align:right;color:var(--steel)">$0</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Tax Savings (PUV + Forestry)</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(ts.savings))+'/yr</td></tr>';
+    if(pasture>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Pasture Lease ('+p.pastureAcres+' ac)</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(pasture))+'/yr</td></tr>';
+    html+='<tr style="background:var(--forest-glow)"><td style="padding:0.75rem 0.5rem;font-weight:600">IMMEDIATE ANNUAL REVENUE</td><td style="text-align:right;font-weight:700;color:var(--forest)">+'+fmt(Math.round(immediate))+'/yr</td></tr>';
+    html+='</table>';
+    html+='<div style="margin-top:1rem;padding:1rem;background:'+(immNet>=0?'var(--forest-glow)':'var(--rose-glow)')+';border-radius:var(--radius-sm);text-align:center">';
+    html+='<div style="font-size:0.75rem;color:var(--steel)">IMMEDIATE NET CASH FLOW</div>';
+    html+='<div style="font-size:1.5rem;font-weight:700;color:'+(immNet>=0?'var(--forest)':'var(--rose)')+'">'+(immNet>=0?'+':'')+fmt(Math.round(immNet))+'/yr</div>';
+    html+='<div style="font-size:0.85rem;color:var(--steel)">'+(immNet>=0?'+':'')+fmt(Math.round(immNet/12))+'/mo</div>';
+    html+='</div></div>';
+    
+    // FULL POTENTIAL REVENUE SECTION
+    html+='<div class="modal-section"><div class="modal-section-title">🚀 Full Potential Revenue (After Development)</div>';
+    html+='<table style="width:100%;font-size:0.85rem;border-collapse:collapse">';
+    if(strNet>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Primary STR Net</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(strNet))+'/yr</td></tr>';
+    if(potentialStr>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Primary STR Net (after build)</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(potentialStr))+'/yr</td></tr>';
+    if(addlStrIncome>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Additional Tiny Cabin STRs ('+(p.multiStr-1)+' units × $30K)</td><td style="text-align:right;color:var(--forest)">+'+fmt(addlStrIncome)+'/yr</td></tr>';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Tax Savings (PUV + Forestry)</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(ts.savings))+'/yr</td></tr>';
+    if(xmas>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Christmas Tree Lease ('+p.plantableAcres+' ac × $150)</td><td style="text-align:right;color:var(--forest)">+'+fmt(xmas)+'/yr</td></tr>';
+    if(pasture>0) html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Pasture Lease</td><td style="text-align:right;color:var(--forest)">+'+fmt(Math.round(pasture))+'/yr</td></tr>';
+    html+='<tr style="background:var(--forest-glow)"><td style="padding:0.75rem 0.5rem;font-weight:600">FULL POTENTIAL REVENUE</td><td style="text-align:right;font-weight:700;color:var(--forest)">+'+fmt(Math.round(full))+'/yr</td></tr>';
+    html+='</table>';
+    html+='<div style="margin-top:1rem;padding:1rem;background:'+(netCF30>=0?'var(--forest-glow)':'var(--rose-glow)')+';border-radius:var(--radius-sm);text-align:center">';
+    html+='<div style="font-size:0.75rem;color:var(--steel)">FULL POTENTIAL NET CASH FLOW (30yr)</div>';
+    html+='<div style="font-size:1.5rem;font-weight:700;color:'+(netCF30>=0?'var(--forest)':'var(--rose)')+'">'+(netCF30>=0?'+':'')+fmt(Math.round(netCF30))+'/yr</div>';
+    html+='<div style="font-size:0.85rem;color:var(--steel)">'+(netCF30>=0?'+':'')+fmt(Math.round(netCF30/12))+'/mo</div>';
+    html+='</div></div>';
+    
+    // ONE-TIME ASSETS
+    html+='<div class="modal-section"><div class="modal-section-title">🌲 One-Time Asset Value (Not Annual Income)</div>';
+    html+='<table style="width:100%;font-size:0.85rem;border-collapse:collapse">';
+    html+='<tr style="border-bottom:1px solid rgba(0,0,0,0.1)"><td style="padding:0.5rem 0">Timber Value ('+p.woodedAcres+' ac × $2,500)</td><td style="text-align:right;font-weight:600">'+fmt(timber)+'</td></tr>';
+    html+='</table>';
+    html+='<div style="margin-top:0.5rem;font-size:0.75rem;color:var(--steel)">Can be harvested to reduce loan principal or fund construction</div></div>';
+    
+    // MORTGAGE COMPARISON
+    html+='<div class="modal-section"><div class="modal-section-title">📈 20yr vs 30yr Mortgage Comparison</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">';
+    html+='<div style="background:var(--snow);padding:1rem;border-radius:var(--radius-sm);text-align:center"><div style="font-weight:600;margin-bottom:0.5rem">20-Year @ 6%</div>';
+    html+='<div style="font-size:1.25rem;font-weight:700">'+fmt(Math.round(costs20.mortgageMonthly))+'/mo</div>';
+    html+='<div style="font-size:0.8rem;color:var(--steel);margin:0.25rem 0">Total Interest: '+fmt(Math.round(costs20.totalInterest))+'</div>';
+    html+='<div style="font-size:0.85rem;margin-top:0.5rem;color:'+(netCF20>=0?'var(--forest)':'var(--rose)')+';font-weight:600">Net CF: '+(netCF20>=0?'+':'')+fmt(Math.round(netCF20))+'/yr</div></div>';
+    html+='<div style="background:var(--snow);padding:1rem;border-radius:var(--radius-sm);text-align:center"><div style="font-weight:600;margin-bottom:0.5rem">30-Year @ 6%</div>';
+    html+='<div style="font-size:1.25rem;font-weight:700">'+fmt(Math.round(costs30.mortgageMonthly))+'/mo</div>';
+    html+='<div style="font-size:0.8rem;color:var(--steel);margin:0.25rem 0">Total Interest: '+fmt(Math.round(costs30.totalInterest))+'</div>';
+    html+='<div style="font-size:0.85rem;margin-top:0.5rem;color:'+(netCF30>=0?'var(--forest)':'var(--rose)')+';font-weight:600">Net CF: '+(netCF30>=0?'+':'')+fmt(Math.round(netCF30))+'/yr</div></div>';
+    html+='</div></div>';
+    
+    // TAX STRATEGY
+    html+='<div class="modal-section" style="background:var(--forest-glow);border-radius:var(--radius-sm);padding:1.25rem"><div class="modal-section-title" style="color:var(--forest);border:none;margin-bottom:1rem">🏛️ Tax Strategy Details</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;text-align:center">';
+    html+='<div><div style="font-size:0.7rem;color:var(--steel)">Base Tax</div><div style="font-weight:600;color:var(--rose);text-decoration:line-through">'+fmt(Math.round(ts.baseTax))+'/yr</div></div>';
+    html+='<div><div style="font-size:0.7rem;color:var(--steel)">After PUV+Forestry</div><div style="font-weight:700;color:var(--forest)">'+fmt(Math.round(ts.reducedTax))+'/yr</div></div>';
+    html+='<div><div style="font-size:0.7rem;color:var(--steel)">Annual Savings</div><div style="font-weight:700;color:var(--forest)">'+fmt(Math.round(ts.savings))+'/yr</div></div>';
+    html+='</div></div>';
+    
+    // HIGHLIGHTS & CONCERNS
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0">';
+    html+='<div style="background:var(--forest-glow);border-radius:var(--radius-sm);padding:1rem"><div style="font-weight:600;color:var(--forest);margin-bottom:0.5rem">✓ Highlights</div><ul class="modal-list highlights">'+p.highlights.map(h=>'<li>'+h+'</li>').join('')+'</ul></div>';
+    html+='<div style="background:var(--rose-glow);border-radius:var(--radius-sm);padding:1rem"><div style="font-weight:600;color:var(--rose);margin-bottom:0.5rem">⚠ Concerns</div><ul class="modal-list concerns">'+p.concerns.map(c=>'<li>'+c+'</li>').join('')+'</ul></div>';
+    html+='</div>';
+    
+    if(p.questions&&p.questions.length){html+='<div class="modal-section"><div class="modal-section-title">❓ Questions for Scott</div><ul class="modal-list questions">'+p.questions.map(q=>'<li>'+q+'</li>').join('')+'</ul></div>';}
+    if(p.link)html+='<a href="'+p.link+'" target="_blank" class="modal-link">View Listing →</a>';
+    document.getElementById('m-body').innerHTML=html;
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow='hidden';
+}
+function showSection(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');event.target.classList.add('active');}
+function closeModal(e){if(e&&e.target!==e.currentTarget)return;document.getElementById('modal').classList.remove('active');document.body.style.overflow='';}
+document.addEventListener('DOMContentLoaded',init);
+    </script>
+</body>
+</html>
